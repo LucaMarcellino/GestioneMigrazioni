@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.borders.model.Country;
 import it.polito.tdp.borders.model.CountryAndNumber;
 import it.polito.tdp.borders.model.Model;
 import javafx.event.ActionEvent;
@@ -30,7 +31,7 @@ public class FXMLController {
     private TextField txtAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxNazione"
-    private ComboBox<?> boxNazione; // Value injected by FXMLLoader
+    private ComboBox<Country> boxNazione; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -60,10 +61,31 @@ public class FXMLController {
 			txtResult.appendText("Errore di formattazione dell'anno\n");
 			return;
 		}
+		
+		boxNazione.getItems().addAll(this.model.getCountries());
     }
 
     @FXML
     void doSimula(ActionEvent event) {
+    	
+    	Country stato = boxNazione.getValue();
+    	txtResult.clear();
+    	if(stato==null) {
+    		
+    		txtResult.setText("selezione stato");
+    		return;
+    		
+    	}
+    	
+    	this.model.simula(stato);
+    	txtResult.appendText("Simulazione a partire da: "+stato+"\n");
+    	txtResult.appendText("Numero Passi : "+this.model.getT()+"\n");
+    	for(CountryAndNumber c: this.model.getStanziali()) {
+    		if(c.getNumber()>0) {
+    			txtResult.appendText(c.getCountry()+" ="+ c.getNumber() +"\n");
+    		}
+    	}
+    	
 
     }
 

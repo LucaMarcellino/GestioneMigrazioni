@@ -17,9 +17,11 @@ public class Model {
 	
 	private Graph<Country, DefaultEdge> graph ;
 	private Map<Integer,Country> countriesMap ;
+	private Simulatore sim;
 	
 	public Model() {
 		this.countriesMap = new HashMap<>() ;
+		this.sim=new Simulatore();
 
 	}
 	
@@ -42,6 +44,13 @@ public class Model {
 		}
 	}
 	
+	public List<Country> getCountries() {
+		List<Country> res= new ArrayList<Country>();
+		res.addAll(this.graph.vertexSet());
+		Collections.sort(res);
+		return res;
+	}
+	
 	public List<CountryAndNumber> getCountryAndNumber() {
 		List<CountryAndNumber> list = new ArrayList<>() ;
 		
@@ -52,4 +61,29 @@ public class Model {
 		return list ;
 	}
 
+	public void simula(Country partenza) {
+		if(this.graph!=null) {
+		sim.init(partenza, this.graph);
+		sim.run();
+		}
+	}
+	
+	public int getT() {
+		return this.sim.getT();
+	}
+	
+	public List<CountryAndNumber> getStanziali(){
+		Map<Country,Integer> stanziali=this.sim.getStanziali();
+		List<CountryAndNumber> res= new ArrayList<CountryAndNumber>();
+		for(Country c : stanziali.keySet()) {
+			CountryAndNumber cn = new CountryAndNumber(c, stanziali.get(c));
+			res.add(cn);
+		}
+		Collections.sort(res);
+		return res;
+	}
+
+
+	
+	
 }
